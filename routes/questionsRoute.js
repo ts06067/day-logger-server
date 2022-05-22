@@ -6,12 +6,15 @@ const async = require("async");
 const { QuestionEntry, QuestionSet } = require("../models/question");
 
 const { wrapAsync } = require("../utils/helper");
+const { isLoggedIn } = require("../middleware/auth");
 
 //get all questions
 router.get(
   "/questions",
+  isLoggedIn,
   wrapAsync(async function (req, res) {
-    const questionEntries = await QuestionEntry.find();
+    const uid = req.session.userId;
+    const questionEntries = await QuestionEntry.find({ agent: uid });
     res.json(questionEntries);
   })
 );
@@ -19,21 +22,26 @@ router.get(
 //get current question template
 router.get(
   "/questionsets",
+  isLoggedIn,
   wrapAsync(async function (req, res) {
-    const questionSet = await QuestionSet.find();
+    const uid = req.session.userId;
+    const questionSet = await QuestionSet.find({ agent: uid });
     res.json(questionSet);
   })
 );
 
 router.post(
   "/questionsets",
+  isLoggedIn,
   wrapAsync(async function (req, res) {
+    const uid = req.session.userId;
+
     const questionSet = req.body;
     const questionArr = [];
 
     //for each QE in QS, push to arr
-    async.each(questionSet, async (e) => {
-      const searchFilter = { ...e };
+    await async.each(questionSet, async (e) => {
+      const searchFilter = { ...e, agent: uid };
       const existingQuestionEntry = await QuestionEntry.findOne(searchFilter);
 
       if (existingQuestionEntry) {
@@ -41,7 +49,10 @@ router.post(
         questionArr.push(existingQuestionEntry);
       } else {
         //otherwise create new and push
-        const newQuestionEntry = await new QuestionEntry(e).save();
+        const newQuestionEntry = await new QuestionEntry({
+          ...e,
+          agent: uid,
+        }).save();
         questionArr.push(newQuestionEntry);
       }
     });
@@ -49,6 +60,7 @@ router.post(
     //save new QS
     const newQuestionSet = await new QuestionSet({
       question_arr: questionArr,
+      agent: uid,
     }).save();
 
     res.json(newQuestionSet);

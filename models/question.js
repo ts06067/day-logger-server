@@ -5,13 +5,13 @@ const Schema = mongoose.Schema;
 const QuestionEntrySchema = new Schema({
   type_of_question: { type: String },
   text: { type: String, unique: true },
-  //agent
+  agent: { type: Schema.Types.ObjectId, ref: "User" },
 });
 
 const QuestionSetSchema = new Schema(
   {
     question_arr: [{ type: Schema.Types.ObjectId, ref: "QuestionEntry" }],
-    //agent
+    agent: { type: Schema.Types.ObjectId, ref: "User" },
   },
   { timestamps: true }
 );
