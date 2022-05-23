@@ -63,7 +63,7 @@ router.post(
 router.post(
   "/login",
   wrapAsync(async function (req, res) {
-    const { password, email } = req.body;
+    const { email, password } = req.body;
     const user = await User.findAndValidate(email, password);
     if (user) {
       req.session.userId = user._id;

@@ -25,7 +25,11 @@ router.get(
   isLoggedIn,
   wrapAsync(async function (req, res) {
     const uid = req.session.userId;
-    const questionSet = await QuestionSet.find({ agent: uid });
+    const questionSet = await QuestionSet.findOne(
+      { agent: uid },
+      {},
+      { sort: { created_at: -1 } }
+    ).populate("question_arr");
     res.json(questionSet);
   })
 );
