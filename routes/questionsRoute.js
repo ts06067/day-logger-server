@@ -45,24 +45,25 @@ router.post(
     //for each QE in QS, push to arr
     await async.each(questionSet, async (e) => {
       //filter: find same text & type_of_question
-      const searchFilter = {
-        text: e.text,
+      const newQuestionEntry = {
         type_of_question: e.type_of_question,
+        text: e.text,
+        option: e.option,
         agent: uid,
       };
-      const existingQuestionEntry = await QuestionEntry.findOne(searchFilter);
+      const existingQuestionEntry = await QuestionEntry.findOne(
+        newQuestionEntry
+      );
 
       if (existingQuestionEntry) {
         //if already exist, push old one
         questionArr.push(existingQuestionEntry);
       } else {
         //otherwise create new and push
-        const newQuestionEntry = await new QuestionEntry({
-          type_of_question: e.type_of_question,
-          text: e.text,
-          agent: uid,
-        }).save();
-        questionArr.push(newQuestionEntry);
+        const createdQuestionEntry = await new QuestionEntry(
+          newQuestionEntry
+        ).save();
+        questionArr.push(createdQuestionEntry);
       }
     });
 
