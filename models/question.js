@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 const QuestionEntrySchema = new Schema({
   type_of_question: { type: String },
-  text: { type: String, unique: true },
+  text: { type: String },
   option: { type: Array },
   agent: { type: Schema.Types.ObjectId, ref: "User" },
 });

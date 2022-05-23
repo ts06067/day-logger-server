@@ -25,11 +25,10 @@ router.get(
   isLoggedIn,
   wrapAsync(async function (req, res) {
     const uid = req.session.userId;
-    const questionSet = await QuestionSet.findOne(
-      { agent: uid },
-      {},
-      { sort: { created_at: -1 } }
-    ).populate("question_arr");
+    //get the latest one
+    const questionSet = await QuestionSet.findOne({ agent: uid })
+      .sort("-createdAt")
+      .populate("question_arr");
     res.json(questionSet);
   })
 );
@@ -45,7 +44,12 @@ router.post(
 
     //for each QE in QS, push to arr
     await async.each(questionSet, async (e) => {
-      const searchFilter = { ...e, agent: uid };
+      //filter: find same text & type_of_question
+      const searchFilter = {
+        text: e.text,
+        type_of_question: e.type_of_question,
+        agent: uid,
+      };
       const existingQuestionEntry = await QuestionEntry.findOne(searchFilter);
 
       if (existingQuestionEntry) {
@@ -54,7 +58,8 @@ router.post(
       } else {
         //otherwise create new and push
         const newQuestionEntry = await new QuestionEntry({
-          ...e,
+          type_of_question: e.type_of_question,
+          text: e.text,
           agent: uid,
         }).save();
         questionArr.push(newQuestionEntry);
