@@ -12,7 +12,7 @@ module.exports.isLoggedIn = (req, res, next) => {
 module.exports.isAgentOfLoggedDataSet = wrapAsync(async (req, res, next) => {
   const dateStr = req.params.date;
   const lds = await LoggedDataSet.findByDate(dateStr);
-  if (lds.agent && !lds.agent.equals(req.session.userId)) {
+  if (lds && lds.agent && !lds.agent.equals(req.session.userId)) {
     throw new Error("Not an authorized agent for this LDS", 401);
   }
   next();
