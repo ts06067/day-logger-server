@@ -103,7 +103,8 @@ router.post(
     const loggedDataArr = [];
     await async.each(loggedDataSet, async (e) => {
       const newLoggedDataEntry = await new LoggedDataEntry({
-        ...e,
+        question: e.question,
+        answer: e.answer,
         agent: uid,
         parent: parentId,
       }).save();
