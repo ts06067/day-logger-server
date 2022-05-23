@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const async = require("async");
+const eachSeries = require("async/eachSeries");
 
 const { QuestionEntry, QuestionSet } = require("../models/question");
 
@@ -43,7 +44,7 @@ router.post(
     const questionArr = [];
 
     //for each QE in QS, push to arr
-    await async.each(questionSet, async (e) => {
+    await async.eachSeries(questionSet, async (e) => {
       //filter: find same text & type_of_question
       const newQuestionEntry = {
         type_of_question: e.type_of_question,

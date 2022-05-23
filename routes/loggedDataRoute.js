@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const async = require("async");
+const eachSeries = require("async/eachSeries");
 
 const { LoggedDataEntry, LoggedDataSet } = require("../models/loggedData");
 const { QuestionEntry, QuestionSet } = require("../models/question");
@@ -65,7 +66,7 @@ router.put(
     const newLoggedDataArr = req.body;
 
     //for each existing LDE, update answer
-    await async.each(newLoggedDataArr, async (e) => {
+    await async.eachSeries(newLoggedDataArr, async (e) => {
       //find matching child LDE and update
       const oldDataEntry = await LoggedDataEntry.findById(e._id);
       if (oldDataEntry.parent.equals(parentId)) {
@@ -101,7 +102,7 @@ router.post(
     //save new LDE
     const parentId = newLoggedDataSet._id;
     const loggedDataArr = [];
-    await async.each(loggedDataSet, async (e) => {
+    await async.eachSeries(loggedDataSet, async (e) => {
       const newLoggedDataEntry = await new LoggedDataEntry({
         question: e.question,
         answer: e.answer,
