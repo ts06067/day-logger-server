@@ -111,12 +111,13 @@ router.post(
     });
 
     //save new LDS
-    const createdLoggedDataSet = await LoggedDataSet.findByIdAndUpdate(
-      parentId,
-      {
-        logged_data_arr: loggedDataArr,
-      }
-    );
+    await LoggedDataSet.findByIdAndUpdate(parentId, {
+      logged_data_arr: loggedDataArr,
+    });
+
+    const createdLoggedDataSet = await LoggedDataSet.findById(
+      parentId
+    ).populate({ path: "logged_data_arr", populate: { path: "question" } });
 
     res.json(createdLoggedDataSet);
   })
