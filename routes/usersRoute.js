@@ -11,7 +11,7 @@ router.get(
   wrapAsync(async function (req, res) {
     const uid = req.session.userId;
     const user = await User.findById(uid).populate("address");
-    req.json(user);
+    res.json(user);
   })
 );
 
@@ -22,15 +22,22 @@ router.put(
     const body = req.body;
     const { name, imgUrl, email } = body;
     // {address_1, address_2}
-    const address = body;
+    const { address_1, address_2 } = body;
 
     //update user address
-    const userAddress = await UserAddress.findOne({ agent: uid });
+    let userAddress = await UserAddress.findOne({ agent: uid });
     if (userAddress) {
-      await UserAddress.findByIdAndUpdate(userAddress._id, address);
+      await UserAddress.findByIdAndUpdate(userAddress._id, {
+        address_1,
+        address_2,
+      });
     } else {
       //if for first time, create new and save
-      const newUserAddress = new UserAddress({ ...address, agent: uid });
+      const newUserAddress = new UserAddress({
+        address_1,
+        address_2,
+        agent: uid,
+      });
       userAddress = await newUserAddress.save();
     }
 
@@ -40,7 +47,7 @@ router.put(
       imgUrl,
       email,
       address: userAddress,
-    });
+    }).populate("address");
 
     res.json(updatedUser);
   })
