@@ -28,7 +28,7 @@ router.get(
         .length;
 
       statArr.push({
-        user: { name: u.name, email: u.email },
+        user: { _id: uid, name: u.name, email: u.email },
         numQuestionEntries,
         numLoggedDataEntries,
       });
@@ -40,7 +40,7 @@ router.get(
 
 //delete a user
 router.delete(
-  "/user/:id",
+  "/users/:id",
   isAdmin,
   wrapAsync(async function (req, res) {
     const uid = req.session.userId;
