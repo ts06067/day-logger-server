@@ -24,7 +24,9 @@ module.exports.isLoggedIn = (req, res, next) => {
 // If the author has an agent, the logged in user must be that agent to access
 module.exports.isAgentOfLoggedDataSet = wrapAsync(async (req, res, next) => {
   const dateStr = req.params.date;
-  const lds = await LoggedDataSet.findByDate(dateStr);
+  const lds = await LoggedDataSet.findByDate(dateStr, {
+    agent: req.session.userId,
+  });
   if (lds && lds.agent && !lds.agent.equals(req.session.userId)) {
     throw new Error("Not an authorized agent for this LDS", 401);
   }

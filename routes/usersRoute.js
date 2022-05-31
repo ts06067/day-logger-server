@@ -59,7 +59,7 @@ router.post(
     const { password, email, name } = req.body;
     const newUser = await new User({ password, email, name }).save();
     if (newUser) {
-      req.session.userId = newUser._id;
+      req.session.userId = newUser._id; //auto login after register success
       res.sendStatus(204);
     } else {
       res.sendStatus(401);
