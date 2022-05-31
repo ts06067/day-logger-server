@@ -4,6 +4,7 @@ const cors = require("cors");
 const loggedDataRouter = require("./routes/loggedDataRoute");
 const questionsRouter = require("./routes/questionsRoute");
 const usersRouter = require("./routes/usersRoute");
+const adminRouter = require("./routes/adminRoute");
 
 const mongoose = require("mongoose");
 const session = require("express-session");
@@ -66,6 +67,7 @@ app.use(session(sessionConfig));
 app.use("/api", loggedDataRouter);
 app.use("/api", questionsRouter);
 app.use("/api", usersRouter);
+app.use("/api", adminRouter);
 
 app.use((err, req, res, next) => {
   console.log("Error handling called " + err);

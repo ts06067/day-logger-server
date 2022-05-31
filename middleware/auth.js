@@ -1,5 +1,18 @@
 const { LoggedDataEntry, LoggedDataSet } = require("../models/loggedData");
+const { User } = require("../models/user");
 const { wrapAsync } = require("../utils/helper");
+
+module.exports.isAdmin = wrapAsync(async (req, res, next) => {
+  const uid = req.session.userId;
+
+  if (!uid) {
+    const user = await User.findById(uid);
+    if (!user.admin) {
+      throw new Error("Not an admin", 401);
+    }
+  }
+  next();
+});
 
 module.exports.isLoggedIn = (req, res, next) => {
   if (!req.session.userId) {
@@ -17,5 +30,3 @@ module.exports.isAgentOfLoggedDataSet = wrapAsync(async (req, res, next) => {
   }
   next();
 });
-
-//isAdmin

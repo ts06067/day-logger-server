@@ -5,6 +5,7 @@ const validator = require("../utils/validators");
 const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
+  admin: { type: Boolean, required: true, default: false },
   name: { type: String, required: true },
   address: { type: Schema.Types.ObjectId, ref: "UserAddress" },
   imgUrl: { type: String },
