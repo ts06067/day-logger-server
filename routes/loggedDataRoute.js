@@ -18,7 +18,7 @@ router.get(
     const uid = req.session.userId;
     const loggedDataEntries = await LoggedDataEntry.find({
       agent: uid,
-    }).populate("questions");
+    });
     res.json(loggedDataEntries);
   })
 );
@@ -29,9 +29,10 @@ router.get(
   isLoggedIn,
   wrapAsync(async function (req, res) {
     const uid = req.session.userId;
-    const loggedDataSets = await LoggedDataSet.find({ agent: uid }).populate(
-      "logged_data_arr"
-    );
+    const loggedDataSets = await LoggedDataSet.find({ agent: uid }).populate({
+      path: "logged_data_arr",
+      populate: { path: "question" },
+    });
     res.json(loggedDataSets);
   })
 );
