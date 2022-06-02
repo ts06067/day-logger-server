@@ -9,5 +9,12 @@
     "express": "^4.18.1",
     "express-session": "^1.17.3",
     "mongoose": "^6.3.3"
+  },
+  "devDependencies": {
+    "jest": "^28.1.0"
+  },
+  "scripts": {
+    "test": "jest"
   }
 }
+
