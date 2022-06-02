@@ -12,7 +12,7 @@ const LoggedDataEntrySchema = new Schema({
 });
 
 const LoggedDataSetSchema = new Schema({
-  date: { type: Date, unique: true },
+  date: { type: Date },
   logged_data_arr: [{ type: Schema.Types.ObjectId, ref: "LoggedDataEntry" }],
   agent: { type: Schema.Types.ObjectId, ref: "User" },
 });
