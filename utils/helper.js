@@ -10,7 +10,7 @@ const parseDate = function (str) {
   //YYYYMMDD
   const year = parseInt(str.substring(0, 4));
   const month = parseInt(str.substring(4, 6)) - 1; //0-indexed
-  const date = parseInt(str.substring(6, 8));
+  const date = parseInt(str.substring(6, 8)) - 1;
   return new Date(year, month, date);
 };
 
